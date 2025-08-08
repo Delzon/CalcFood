@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prueba de Conexión Offline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .online { background-color: #d4edda; color: #155724; }
+        .offline { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>Prueba de Conexión Offline</h1>
+    
+    <div id="connectionStatus" class="status">
+        Comprobando estado de conexión...
+    </div>
+    
+    <div id="serviceWorkerStatus" class="status">
+        Comprobando estado del Service Worker...
+    </div>
+    
+    <div id="cacheStatus" class="status">
+        Comprobando caché...
+    </div>
+    
+    <h2>Instrucciones para probar el modo offline:</h2>
+    <ol>
+        <li>Abre las Herramientas de desarrollo (F12)</li>
+        <li>Ve a la pestaña 'Application' o 'Aplicación'</li>
+        <li>En el panel izquierdo, selecciona 'Service Workers'</li>
+        <li>Marca la casilla 'Offline' para simular modo offline</li>
+        <li>Actualiza la página para ver si la aplicación funciona sin conexión</li>
+    </ol>
+
+    <p><a href="index.html">Volver a la calculadora</a></p>
+
+    <script>
+        // Verificar estado de conexión
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connectionStatus');
+            if (navigator.onLine) {
+                statusElement.textContent = 'Estás en línea. La aplicación está lista para funcionar sin conexión.';
+                statusElement.className = 'status online';
+            } else {
+                statusElement.textContent = 'Estás desconectado. La aplicación debería funcionar en modo offline.';
+                statusElement.className = 'status offline';
+            }
+        }
+
+        // Verificar estado del Service Worker
+        function updateServiceWorkerStatus() {
+            const statusElement = document.getElementById('serviceWorkerStatus');
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration()
+                    .then(registration => {
+                        if (registration) {
+                            statusElement.textContent = 'Service Worker registrado correctamente.';
+                            statusElement.className = 'status online';
+                        } else {
+                            statusElement.textContent = 'No se encontró un Service Worker registrado.';
+                            statusElement.className = 'status warning';
+                        }
+                    })
+                    .catch(error => {
+                        statusElement.textContent = 'Error al verificar el Service Worker: ' + error.message;
+                        statusElement.className = 'status offline';
+                    });
+            } else {
+                statusElement.textContent = 'Tu navegador no soporta Service Workers. Usa Chrome, Firefox o Edge.';
+                statusElement.className = 'status offline';
+            }
+        }
+
+        // Verificar caché
+        function updateCacheStatus() {
+            const statusElement = document.getElementById('cacheStatus');
+            
+            if ('caches' in window) {
+                caches.open('dog-food-calculator-v1')
+                    .then(cache => {
+                        return cache.keys();
+                    })
+                    .then(requests => {
+                        if (requests && requests.length > 0) {
+                            statusElement.textContent = `Se encontraron ${requests.length} recursos en caché.`;
+                            statusElement.className = 'status online';
+                        } else {
+                            statusElement.textContent = 'No se encontraron recursos en caché. Recarga la página para guardar en caché.';
+                            statusElement.className = 'status warning';
+                        }
+                    })
+                    .catch(error => {
+                        statusElement.textContent = 'Error al acceder al caché: ' + error.message;
+                        statusElement.className = 'status offline';
+                    });
+            } else {
+                statusElement.textContent = 'Tu navegador no soporta la API de caché.';
+                statusElement.className = 'status offline';
+            }
+        }
+
+        // Inicializar
+        window.addEventListener('load', () => {
+            updateConnectionStatus();
+            updateServiceWorkerStatus();
+            updateCacheStatus();
+            
+            // Escuchar cambios en la conexión
+            window.addEventListener('online', updateConnectionStatus);
+            window.addEventListener('offline', updateConnectionStatus);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4a90e2">
+    <meta name="description" content="Calcula la cantidad exacta de comida necesaria para perros en hospedaje">
+    <title>Calculadora de Comida para Hospedaje Canino</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icon.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Calculadora Canina">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Calculadora de Comida para Perros</h1>
+            <p>Calcula exactamente cuánta comida necesitará un perro durante su estancia en tu hospedaje, considerando días completos, parciales y diferentes formatos de alimentación.</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="form-section">
+                <h2> Ingresa los datos</h2>
+                <div class="form-group">
+                    <label for="arrivalDate">Fecha de llegada:</label>
+                    <input type="date" id="arrivalDate">
+                </div>
+                
+                <div class="form-group">
+                    <label for="departureDate">Fecha de salida:</label>
+                    <input type="date" id="departureDate">
+                </div>
+                
+                <div class="form-group">
+                    <label for="foodType">Tipo de comida:</label>
+                    <select id="foodType">
+                        <option value="grams">Gramos (por porción)</option>
+                        <option value="bags">Bolsitas (1 bolsa = 1 comida)</option>
+                        <option value="meatballs">Bolitas de carne</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mealsPerDay">Comidas por día:</label>
+                    <input type="number" id="mealsPerDay" min="1" max="10" value="2">
+                </div>
+                
+                <div class="form-group" id="quantityContainer">
+                    <label for="quantityPerMeal" id="quantityLabel">Gramos por comida:</label>
+                    <input type="number" id="quantityPerMeal" min="1" value="100">
+                </div>
+                
+                <div class="date-group">
+                    <div class="form-group">
+                        <label for="arrivalMeals">Comidas el día de llegada:</label>
+                        <input type="number" id="arrivalMeals" min="0" max="10" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="departureMeals">Comidas el día de salida:</label>
+                        <input type="number" id="departureMeals" min="0" max="10" value="1">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="foodProvided" id="foodProvidedLabel">Comida enviada (gramos):</label>
+                    <input type="number" id="foodProvided" min="1" value="800">
+                </div>
+                
+                <button class="btn" id="calculateBtn">Calcular consumo</button>
+            </div>
+            
+            <div class="result-section">
+                <h2> Resultados del cálculo</h2>
+                <div class="result-box">
+                    <div class="resumen">
+                        <h3> Resumen de Estancia</h3>
+                        <div class="resumen-item">
+                            <span>Llegada:</span>
+                            <span class="resumen-value" id="arrivalSummary">-</span>
+                        </div>
+                        <div class="resumen-item">
+                            <span>Salida:</span>
+                            <span class="resumen-value" id="departureSummary">-</span>
+                        </div>
+                        <div class="resumen-item">
+                            <span>Días completos:</span>
+                            <span class="resumen-value" id="fullDaysSummary">-</span>
+                        </div>
+                        <div class="resumen-item">
+                            <span>Días totales:</span>
+                            <span class="resumen-value" id="totalDaysSummary">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="consumo">
+                        <h3> Detalle de Consumo</h3>
+                        <div class="resumen-item">
+                            <span>Total de comidas:</span>
+                            <span class="resumen-value" id="totalMeals">-</span>
+                        </div>
+                        <div class="resumen-item">
+                            <span>Consumo estimado:</span>
+                            <span class="resumen-value" id="totalConsumption">-</span>
+                        </div>
+                        <div id="consumptionDetails"></div>
+                    </div>
+                    
+                    <div class="balance">
+                        <h3> Balance Final</h3>
+                        <div class="resumen-item">
+                            <span>Comida enviada:</span>
+                            <span class="resumen-value" id="foodProvidedResult">-</span>
+                        </div>
+                        <div class="result-value" id="balanceResult">-</div>
+                        <div class="resumen-item">
+                            <span>Resultado:</span>
+                            <span class="resumen-value" id="resultSummary">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--
+        <div class="scenario">
+            <h2> Escenarios de Ejemplo</h2>
+            <div class="examples">
+                <div class="example-card">
+                    <div class="example-title">Escenario 1: Comida en Gramos</div>
+                    <div class="example-detail">
+                        <span>Comidas/día:</span>
+                        <span>2 veces</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Porción:</span>
+                        <span>100g cada vez</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Comida enviada:</span>
+                        <span>800g</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Estancia:</span>
+                        <span>8 al 11 de agosto</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Llegada:</span>
+                        <span>1 comida</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Salida:</span>
+                        <span>1 comida</span>
+                    </div>
+                    <div class="example-result sobra-bg">
+                        Consume 600g | Sobran 200g
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-title">Escenario 2: Bolitas de Carne</div>
+                    <div class="example-detail">
+                        <span>Comidas/día:</span>
+                        <span>3 veces</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Porción:</span>
+                        <span>5 bolitas cada vez</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Comida enviada:</span>
+                        <span>45 bolitas</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Estancia:</span>
+                        <span>8 al 11 de agosto</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Llegada:</span>
+                        <span>2 comidas</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Salida:</span>
+                        <span>1 comida</span>
+                    </div>
+                    <div class="example-result exacto-bg">
+                        Consume 45 bolitas | Cantidad exacta
+                    </div>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-title">Escenario 3: Bolsitas</div>
+                    <div class="example-detail">
+                        <span>Comidas/día:</span>
+                        <span>2 veces</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Porción:</span>
+                        <span>1 paquete cada vez</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Comida enviada:</span>
+                        <span>5 paquetes</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Estancia:</span>
+                        <span>8 al 11 de agosto</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Llegada:</span>
+                        <span>1 comida</span>
+                    </div>
+                    <div class="example-detail">
+                        <span>Salida:</span>
+                        <span>1 comida</span>
+                    </div>
+                    <div class="example-result falta-bg">
+                        Consume 6 paquetes | Falta 1 paquete
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+        
+        <footer>
+            <p> 2023 Calculadora de Comida para Hospedaje Canino | Creada para simplificar la gestión de hospedajes de mascotas</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
