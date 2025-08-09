@@ -33,8 +33,6 @@ function updateDateDisplay(input) {
 document.addEventListener('DOMContentLoaded', function() {
     // Establecer fechas por defecto
     const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
     
     const arrivalDateInput = document.getElementById('arrivalDate');
     const departureDateInput = document.getElementById('departureDate');
@@ -64,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Establecer fechas por defecto
     arrivalDateInput.value = formatDate(today);
-    departureDateInput.value = formatDate(tomorrow);
+    departureDateInput.value = formatDate(today);
     
     // Actualizar visualización de fechas
     updateDateDisplay(arrivalDateInput);
@@ -80,14 +78,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Set default dates
-    const arrivalDate = new Date(today);
+    /*const arrivalDate = new Date(today);
     arrivalDate.setDate(today.getDate() - 3);
     
     const departureDate = new Date(today);
-    departureDate.setDate(today.getDate() + 3);
+    departureDate.setDate(today.getDate() + 3);*/
     
-    document.getElementById('arrivalDate').valueAsDate = arrivalDate;
-    document.getElementById('departureDate').valueAsDate = departureDate;
+    //document.getElementById('arrivalDate').value = formatDate(today);
+    //document.getElementById('departureDate').value = formatDate(today);
     
     // Update labels based on food type
     const foodTypeSelect = document.getElementById('foodType');
@@ -123,17 +121,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get result section element
     const resultSection = document.querySelector('.result-section');
     
-    // Calculate button event
+    // Add click event listener to the calculate button
     document.getElementById('calculateBtn').addEventListener('click', function() {
         calculate();
-        // Smooth scroll to result section
+        // Scroll to the result section
         resultSection.scrollIntoView({ behavior: 'smooth' });
     });
     
     // Initial calculation
-    calculate();
+    //calculate();
     
     function calculate() {
+        // Show the result section when calculation is performed
+        resultSection.style.display = 'block';
         // Get form values and adjust for timezone
         const arrivalDateStr = document.getElementById('arrivalDate').value;
         const departureDateStr = document.getElementById('departureDate').value;
