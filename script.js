@@ -1,6 +1,85 @@
+// Función para formatear la fecha como YYYY-MM-DD
+function formatDate(date) {
+    const d = new Date(date);
+    // Ajustar para evitar problemas de zona horaria
+    const offset = d.getTimezoneOffset();
+    const adjustedDate = new Date(d.getTime() - (offset * 60 * 1000));
+    return adjustedDate.toISOString().split('T')[0];
+}
+
+// Función para formatear la fecha en un formato legible (ej: 8 Ago 2023)
+function formatDisplayDate(dateString) {
+    const options = { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric',
+        weekday: 'long'
+    };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', options);
+}
+
+// Función para actualizar la visualización de la fecha
+function updateDateDisplay(input) {
+    const dateGroup = input.closest('.date-group');
+    if (input.value) {
+        const formattedDate = formatDisplayDate(input.value);
+        dateGroup.setAttribute('data-date', formattedDate);
+    } else {
+        dateGroup.removeAttribute('data-date');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Set default dates
+    // Establecer fechas por defecto
     const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const arrivalDateInput = document.getElementById('arrivalDate');
+    const departureDateInput = document.getElementById('departureDate');
+    
+    // Hacer que el input de fecha sea clickeable en toda su área
+    function makeDateInputClickable(input) {
+        // Agregar clase para el cursor pointer
+        input.style.cursor = 'pointer';
+        
+        // Manejar clic en cualquier parte del input
+        input.addEventListener('click', function(e) {
+            // Solo abrir el selector si el clic no fue en el botón del calendario
+            if (e.offsetX < this.offsetWidth - 30) { // 30px es el ancho aproximado del icono
+                this.showPicker();
+            }
+        });
+        
+        // Asegurarse de que el input no tenga eventos que puedan interferir
+        input.addEventListener('mousedown', function(e) {
+            e.stopPropagation();
+        });
+    }
+    
+    // Aplicar la función a ambos inputs de fecha
+    makeDateInputClickable(arrivalDateInput);
+    makeDateInputClickable(departureDateInput);
+    
+    // Establecer fechas por defecto
+    arrivalDateInput.value = formatDate(today);
+    departureDateInput.value = formatDate(tomorrow);
+    
+    // Actualizar visualización de fechas
+    updateDateDisplay(arrivalDateInput);
+    updateDateDisplay(departureDateInput);
+    
+    // Manejar cambios en las fechas
+    arrivalDateInput.addEventListener('change', function() {
+        updateDateDisplay(this);
+    });
+    
+    departureDateInput.addEventListener('change', function() {
+        updateDateDisplay(this);
+    });
+    
+    // Set default dates
     const arrivalDate = new Date(today);
     arrivalDate.setDate(today.getDate() - 3);
     
@@ -41,8 +120,15 @@ document.addEventListener('DOMContentLoaded', function() {
     foodTypeSelect.addEventListener('change', updateLabels);
     updateLabels(); // Initialize labels
     
+    // Get result section element
+    const resultSection = document.querySelector('.result-section');
+    
     // Calculate button event
-    document.getElementById('calculateBtn').addEventListener('click', calculate);
+    document.getElementById('calculateBtn').addEventListener('click', function() {
+        calculate();
+        // Smooth scroll to result section
+        resultSection.scrollIntoView({ behavior: 'smooth' });
+    });
     
     // Initial calculation
     calculate();

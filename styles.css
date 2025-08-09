@@ -7,10 +7,9 @@
 }
 
 body {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: #1e293b;
     color: #e6e6e6;
     min-height: 100vh;
-    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,6 +25,7 @@ header {
     text-align: center;
     padding: 30px 20px;
     color: white;
+    display: none;
 }
 
 header h1 {
@@ -55,20 +55,100 @@ header p {
 }
 
 .form-section {
-    background: #1e293b;
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    border: 1px solid #334155;
+    padding: 20px;
+    width: 100%;
 }
 
-.result-section {
-    background: #1e293b;
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    border: 1px solid #334155;
+.date-fields {
+    display: flex;
+    gap: 15px;
+    /* margin-bottom: 15px; */
 }
+
+.date-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.date-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #e2e8f0;
+    /* font-size: 0.9rem; */
+}
+
+.date-group input[type="date"] {
+    width: 100%;
+    padding: 12px 15px;
+    background: #334155;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    color: #e2e8f0;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Make the date input's clickable area larger */
+.date-group input[type="date"]::-webkit-datetime-edit,
+.date-group input[type="date"]::-webkit-inner-spin-button,
+.date-group input[type="date"]::-webkit-clear-button {
+    padding: 0;
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Ensure the calendar picker indicator is visible */
+.date-group input[type="date"]::-webkit-calendar-picker-indicator {
+    color: transparent;
+    background: none;
+    z-index: 1;
+}
+
+/* Make the entire input clickable */
+.date-group input[type="date"] {
+    position: relative;
+}
+
+.date-group input[type="date"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* Estilos para los campos de comidas */
+.meals-container {
+    display: flex;
+    justify-content: space-between;
+    /* margin: 15px 0; */
+    gap: 15px;
+}
+
+.meals-container .form-group {
+    flex: 1;
+    max-width: 50%;
+    /* text-align: center; */
+}
+
+.meals-container label {
+    display: block;
+    /* margin-bottom: 5px; */
+    color: #e2e8f0;
+    /* font-size: 0.9rem; */
+}
+
+.meals-container select {
+    width: 100%;
+    padding: 8px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    color: #e2e8f0;
+}
+
 
 h2 {
     color: #ffffffd6;
@@ -107,9 +187,9 @@ input:focus, select:focus {
 
 .date-group {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0fr 1fr;
     gap: 15px;
-    align-items: stretch;
+    align-items: center;
 }
 
 .date-group .form-group {
@@ -145,16 +225,9 @@ input:focus, select:focus {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
 
-/*.result-box {
-}*/
-
-.result-box > div {
-    background: #00000024;
-}
 
 .resumen {
     padding: 20px;
-    border-radius: 10px;
     margin-bottom: 20px;
     color: #e0f2fe;
 }
@@ -179,7 +252,6 @@ input:focus, select:focus {
 
 .consumo {
     padding: 20px;
-    border-radius: 10px;
     margin-bottom: 20px;
     color: #dcfce7;
 }
@@ -192,7 +264,6 @@ input:focus, select:focus {
 
 .balance {
     padding: 20px;
-    border-radius: 10px;
     color: #fef3c7;
 }
 
@@ -308,6 +379,7 @@ footer {
     color: white;
     padding: 30px 0;
     font-size: 0.9rem;
+    display: none;
 }
 
 .highlight {

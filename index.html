@@ -22,15 +22,16 @@
         
         <div class="app-container">
             <div class="form-section">
-                <h2> Ingresa los datos</h2>
-                <div class="form-group">
-                    <label for="arrivalDate">Fecha de llegada:</label>
-                    <input type="date" id="arrivalDate">
-                </div>
-                
-                <div class="form-group">
-                    <label for="departureDate">Fecha de salida:</label>
-                    <input type="date" id="departureDate">
+                <div class="date-fields">
+                    <div class="form-group date-group">
+                        <label for="arrivalDate">Llegada:</label>
+                        <input type="date" id="arrivalDate">
+                    </div>
+                    
+                    <div class="form-group date-group">
+                        <label for="departureDate">Salida:</label>
+                        <input type="date" id="departureDate">
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -52,14 +53,14 @@
                     <input type="number" id="quantityPerMeal" min="1" value="100">
                 </div>
                 
-                <div class="date-group">
+                <div class="meals-container">
                     <div class="form-group">
-                        <label for="arrivalMeals">Comidas el día de llegada:</label>
+                        <label for="arrivalMeals">Comidas el día de llegada</label>
                         <input type="number" id="arrivalMeals" min="0" max="10" value="1">
                     </div>
                     
                     <div class="form-group">
-                        <label for="departureMeals">Comidas el día de salida:</label>
+                        <label for="departureMeals">Comidas el día de salida</label>
                         <input type="number" id="departureMeals" min="0" max="10" value="1">
                     </div>
                 </div>
@@ -73,7 +74,6 @@
             </div>
             
             <div class="result-section">
-                <h2> Resultados del cálculo</h2>
                 <div class="result-box">
                     <div class="resumen">
                         <h3> Resumen de Estancia</h3>
