@@ -1,11 +1,13 @@
-const CACHE_NAME = 'dog-food-calculator-v1.4';
+const CACHE_NAME = 'dog-food-calculator-v1.5';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './styles.css',
-  './script.js',
-  './icon.svg',
-  './manifest.json'
+  '/',
+  '/index.html',
+  '/styles.css',
+  '/script.js',
+  '/icon.svg',
+  '/192x192.png',
+  '/512x512.png',
+  '/manifest.json'
 ];
 
 // Install event - cache all necessary assets
@@ -32,37 +34,44 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch event - serve from cache, falling back to network
+// Fetch event - implement stale-while-revalidate strategy
 self.addEventListener('fetch', event => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-        
-        // Clone the request
-        const fetchRequest = event.request.clone();
-
-        return fetch(fetchRequest).then(
-          response => {
-            // Check if we received a valid response
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.match(event.request).then(response => {
+        // Return cached response immediately if available
+        const fetchPromise = fetch(event.request).then(networkResponse => {
+          // Check if we received a valid response
+          if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+            // Update the cache with the fresh response
+            const responseToCache = networkResponse.clone();
+            cache.put(event.request, responseToCache);
+          }
+          return networkResponse;
+        }).catch(error => {
+          console.error('Fetching failed, using cached version:', error);
+          // If network request fails, return cached response if available
+          if (response) {
             return response;
           }
-        );
-      })
-    );
+          throw error;
+        });
+
+        // Return cached response immediately if available, otherwise wait for network
+        return response || fetchPromise;
+      });
+    })
+  );
+});
+
+// Listen for message from the page to skip waiting
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
