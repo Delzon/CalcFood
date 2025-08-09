@@ -1,12 +1,11 @@
-const CACHE_NAME = 'dog-food-calculator-v1.1';
+const CACHE_NAME = 'dog-food-calculator-v1.2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './styles.css',
   './script.js',
   './icon.svg',
-  './manifest.json',
-  './test-offline.html'
+  './manifest.json'
 ];
 
 // Install event - cache all necessary assets

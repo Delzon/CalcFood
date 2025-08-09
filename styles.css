@@ -185,12 +185,6 @@ input:focus, select:focus {
     background-color: #3b4252;
 }
 
-.date-group {
-    display: grid;
-    grid-template-columns: 0fr 1fr;
-    gap: 15px;
-    align-items: center;
-}
 
 .date-group .form-group {
     display: flex;
