@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dog-food-calculator-v1.7';
+const CACHE_NAME = 'dog-food-calculator-v1.8';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

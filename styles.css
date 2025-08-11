@@ -404,3 +404,7 @@ footer {
 #consumptionDetails {
     padding: 10px;
 }
+
+#quantityPerMeal[disabled] {
+    background: #ffffff69;
+}
