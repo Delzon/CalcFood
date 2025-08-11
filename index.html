@@ -233,39 +233,6 @@
     
     <script src="script.js"></script>
     <script src="update-handler.js"></script>
-    <script>
-        // Register Service Worker with update checking
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/CalcFood/sw.js', { scope: '/CalcFood/' })
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                        
-                        // Check for updates on page load
-                        registration.update().catch(err => {
-                            console.log('ServiceWorker update check failed:', err);
-                        });
-                        
-                        // If there's a waiting service worker, prompt the user to update
-                        if (registration.waiting) {
-                            if (confirm('Hay una nueva versión disponible. ¿Deseas actualizar ahora?')) {
-                                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                            }
-                        }
-                        
-                        // Listen for controller change (when a new service worker takes over)
-                        let refreshing = false;
-                        navigator.serviceWorker.addEventListener('controllerchange', () => {
-                            if (refreshing) return;
-                            window.location.reload();
-                            refreshing = true;
-                        });
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
     </script>
 </body>
 </html>
