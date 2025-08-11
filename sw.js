@@ -26,20 +26,32 @@ self.addEventListener('install', event => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (!cacheWhitelist.includes(cacheName)) {
+          // Delete all caches that don't match the current CACHE_NAME
+          if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      // Take control of all clients immediately
+      return self.clients.claim();
     })
   );
-  // Take control of all clients immediately
-  event.waitUntil(self.clients.claim());
+  
+  // Force the service worker to become active immediately
+  self.clients.claim();
+  
+  // Optional: Send a message to all clients to inform about the update
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage({ type: 'SERVICE_WORKER_UPDATED' });
+    });
+  });
 });
 
 // Fetch event - implement stale-while-revalidate strategy
