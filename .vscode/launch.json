@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Abrir en Edge",
+            "type": "msedge",
+            "request": "launch",
+            "file": "${workspaceFolder}/index.html",
+            "runtimeExecutable": "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+            "runtimeArgs": [
+                "--new-window"
+            ]
+        }
+    ]
+}
