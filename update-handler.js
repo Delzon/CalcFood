@@ -1,26 +1,46 @@
 // Check for service worker updates when the page loads
 if ('serviceWorker' in navigator) {
-  // Register the service worker
+  // Wait for the page to be fully loaded
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/CalcFood/sw.js')
-      .then(registration => {
-        console.log('ServiceWorker registration successful');
-        
-        // Check for updates every time the page loads
-        registration.update();
-        
-        // Listen for the controllerchange event to detect when a new service worker takes over
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!refreshing) {
-            window.location.reload();
-            refreshing = true;
-          }
+    // First, unregister any existing service workers
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      return Promise.all(registrations.map(registration => registration.unregister()));
+    })
+    .then(() => {
+      // Then register the service worker with the correct scope
+      return navigator.serviceWorker.register('/CalcFood/sw.js', { scope: '/CalcFood/' });
+    })
+    .then(registration => {
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      
+      // Only check for updates if the service worker is in the 'activated' state
+      if (registration.active) {
+        registration.update().catch(err => {
+          console.log('ServiceWorker update check:', err);
         });
-      })
-      .catch(error => {
-        console.error('ServiceWorker registration failed:', error);
+      }
+      
+      // Listen for the controllerchange event to detect when a new service worker takes over
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          console.log('New service worker activated, reloading...');
+          window.location.reload();
+          refreshing = true;
+        }
       });
+      
+      // Check for a waiting service worker and prompt the user to update
+      if (registration.waiting) {
+        console.log('Found waiting service worker');
+        if (confirm('Hay una nueva versión disponible. ¿Deseas actualizar ahora?')) {
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+      }
+    })
+    .catch(error => {
+      console.error('ServiceWorker registration failed:', error);
+    });
   });
 
   // Listen for update messages from the service worker
